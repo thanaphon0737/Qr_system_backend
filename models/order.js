@@ -1,39 +1,60 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./../db_instance");
-
+const discount = require('./discount');
+const discountCont = require("./discountConditional");
 const order = sequelize.define(
     "order",
     {
-        orderId: {
+        customer_id:{
             type: Sequelize.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
+            allowNull: false,
+            references: {
+               model: 'customers', // 'persons' refers to table name
+               key: 'id', // 'id' refers to column name in persons table
+            }
         },
-        date: {
+        discount_id: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+               model: 'discounts', // 'persons' refers to table name
+               key: 'id', // 'id' refers to column name in persons table
+            }
+        },
+        order_date: {
             type: Sequelize.DATE,
             allowNull: false,
         },
-        status: {
+        total_price: {
             type: Sequelize.STRING,
             allowNull: false,
             defaultValue: "-"
         },
-        customerId: {
+        order_status_id:{
             type: Sequelize.INTEGER,
             allowNull: false,
+            references: {
+               model: 'orderStatuses', // 'persons' refers to table name
+               key: 'id', // 'id' refers to column name in persons table
+            }
         },
-        totalPrice: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            defaultValue: 0
+        note: {
+            type: Sequelize.STRING,
         }
     },
     {
         // options
     }
 );
-(async () => {
-    await customer.sync({ force: false });
-})();
+
+order.associate = models =>{
+    order.hasMany(models.discount, {
+        onDelete: 'cascade'
+    });
+    order.hasMany(models.orderProduct, {
+        onDelete: 'cascade'
+    })
+
+}
 
 module.exports = order;

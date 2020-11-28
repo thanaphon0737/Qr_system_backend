@@ -17,7 +17,7 @@ router.get("/product", async (req, res) => {
 uploadImage = async (files, doc) => {
   if (files.image != null) {
     var fileExtention = files.image.name.split(".")[1];
-    doc.image = `${doc.id}.${fileExtention}`;
+    doc.image = `${doc.product_name}.${fileExtention}`;
     var newpath = path.resolve(__dirname + "/uploaded/images/") + "/" + doc.image;    
 
     if (fs.exists(newpath)) {
@@ -27,7 +27,7 @@ uploadImage = async (files, doc) => {
 
     // Update database
     let result = product.update(
-      { image: doc.image },
+      { product_image: doc.image },
       { where: { id: doc.id } }
     );
     return result;
@@ -39,7 +39,9 @@ router.post("/product", (req, res) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async (error, fields, files) => {
       let result = await product.create(fields);
+      console.log('files', files)
       result = await uploadImage(files, result);
+      console.log(result)
       res.json({
         result: constants.kResultOk,
         message: JSON.stringify(result)
@@ -55,6 +57,7 @@ router.put("/product", (req, res)=>{
     const form = new formidable.IncomingForm();
     form.parse(req, async (error, fields, files) => {
       let result = await product.update(fields, {where : {id: fields.id}});
+      
       result = await uploadImage(files, fields);
       res.json({
         result: constants.kResultOk,
