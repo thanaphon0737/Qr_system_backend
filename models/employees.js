@@ -6,7 +6,7 @@ const employee =  sequelize.define(
         username: {
             type: Sequelize.STRING,
             allowNull: false,
-            
+            unique:true
         },
         password: {
             type: Sequelize.STRING,
@@ -14,11 +14,7 @@ const employee =  sequelize.define(
         },
         role_id: {
             type: Sequelize.INTEGER,
-            allowNull: false,
-            references: {
-               model: 'roles', // 'persons' refers to table name
-               key: 'id', // 'id' refers to column name in persons table
-            }
+            allowNull: false
          },
         first_name:{
             type: Sequelize.STRING,
@@ -33,6 +29,6 @@ const employee =  sequelize.define(
     },{ }
 );
 
-
+employee.belongsTo(role, { foreignKey:'role_id'});
 
 module.exports = employee;
