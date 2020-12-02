@@ -7,7 +7,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("./db_instance");
 
 router.get("/employee", async (req, res) => {
-    const result = await sequelize.query("SELECT * FROM employees, roles WHERE employees.role_id = roles.id ")
+    const result = await employee.findAll({include:[role]})
     res.json(result);
 });
 
@@ -34,12 +34,14 @@ router.post("/role", async (req, res) => {
 
 router.get("/employee/id/:id", async (req, res)=>{
     
-    let result = await employee.findAll({where:{id:req.params.id}},{include:[{model:role}]});
-    console.log(result)
+    let result = await await sequelize.query(`
+    SELECT * FROM employees,roles WHERE employees.id = '${req.params.id}' AND employees.role_id = roles.id `)
+    console.log(result[0][0])
+    
     try {
         res.json({
             result: constants.kResultOk,
-            message: result
+            message: JSON.stringify(result[0][0])
         });
       
     } catch (error) {
@@ -47,21 +49,39 @@ router.get("/employee/id/:id", async (req, res)=>{
     }
   })
 
-router.put("/employee/role/:id", async (req, res)=>{
+
+  router.put("/employee/id/:id", async (req, res)=>{
+      console.log("hellow form front")
+      console.log(req.body)
     try {
-        let result = await employee.update(
+        const role_id_query = await role.findOne({where: {name: req.body.role}});
+        const result = await employee.update(
         {
-            role_id : req.body.role_id
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            role_id : Number(role_id_query.id.toString()),
+            contact: req.body.contact
         },
          {where : {id: req.params.id}});
-        console.log(result)
+        // console.log(role_id_query.id)
         res.json({
             result: constants.kResultOk,
             message: JSON.stringify(result)
         });
-      
     } catch (error) {
-      res.json({ result: constants.kResultNok, message: JSON.stringify(error) });
+      res.json({ result: constants.kResultNok, message: req.body });
+    }
+  })
+
+  router.delete("/employee/id/:id", async (req, res)=>{
+    try{
+      const {id} = req.params
+      let result = await employee.findOne({where: {id}})
+      result = await employee.destroy({ where: { id: id } });
+      res.json({ result: constants.kResultOk, message: JSON.stringify(result) });
+    }catch(err){
+      console.log(err)
+      res.json({ result: constants.kResultNok, message: JSON.stringify(err) });
     }
   })
 module.exports = router;
