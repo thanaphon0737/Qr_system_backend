@@ -15,7 +15,8 @@ router.post("/login", async (req, res) => {
   console.log(result[0][0])
   const data = {
     username: result[0][0].username,
-    role_name:result[0][0].name
+    role_name:result[0][0].name,
+    id:result[0][0].id
   }
     if (result[0][0]) {
       if (bcrypt.compareSync(password, result[0][0].password)) {
