@@ -13,6 +13,10 @@ router.get("/product", async (req, res) => {
   res.json(result);
 });
 
+router.get("/product", async (req, res) => {
+  const result = await product.findAll({ order: Sequelize.literal("id DESC") });
+  res.json(result);
+});
 // Upload Image
 uploadImage = async (files, doc) => {
   if (files.image != null) {

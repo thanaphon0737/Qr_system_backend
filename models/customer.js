@@ -7,10 +7,7 @@ const customer = sequelize.define(
         table_id:{
             type: Sequelize.INTEGER,
             allowNull: false,
-            references: {
-               model: 'tables', // 'persons' refers to table name
-               key: 'id', // 'id' refers to column name in persons table
-            }
+            
         },
         customer_name: {
             type: Sequelize.STRING,
@@ -33,7 +30,7 @@ const customer = sequelize.define(
         // options
     }
 );
-customer.hasMany(order);
+
 
 
 module.exports = customer;

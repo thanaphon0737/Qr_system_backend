@@ -5,13 +5,9 @@ const order = require('./order');
 const discount = sequelize.define(
     "discount",
     {
-        discount_cont_id:{
+        discount_type_id:{
             type: Sequelize.INTEGER,
             allowNull: false,
-            references: {
-               model: 'discountConts', // 'persons' refers to table name
-               key: 'id', // 'id' refers to column name in persons table
-            }
         },
         discount_code:{
             type: Sequelize.STRING
@@ -26,9 +22,5 @@ const discount = sequelize.define(
     }
 )
 
-discount.associate = models =>{
-    discount.hasMany(models.order, {
-        onDelete: 'cascade'
-    })
-}
+
 module.exports = discount;

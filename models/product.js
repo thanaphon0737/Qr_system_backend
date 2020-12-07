@@ -33,10 +33,7 @@ const product = sequelize.define(
       product_type_id: {
         type: Sequelize.INTEGER,
             allowNull: false,
-            references: {
-               model: 'productTypes', // 'persons' refers to table name
-               key: 'id', // 'id' refers to column name in persons table
-            }
+            
       },
       note:{
         type: Sequelize.STRING
@@ -49,8 +46,6 @@ const product = sequelize.define(
 
 
 
-product.associate = models => {
-  
-}
+
 
 module.exports = product;

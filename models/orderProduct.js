@@ -7,18 +7,12 @@ const orderProduct = sequelize.define(
         order_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            references: {
-               model: 'orders', // 'persons' refers to table name
-               key: 'id', // 'id' refers to column name in persons table
-            }
+            
         },
         Product_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            references: {
-               model: 'products', // 'persons' refers to table name
-               key: 'id', // 'id' refers to column name in persons table
-            }
+            
         },
         order_qty: {
             type: Sequelize.INTEGER,

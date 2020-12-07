@@ -10,16 +10,17 @@ router.post("/login", async (req, res) => {
   console.log("login: " + JSON.stringify(req.body));
   const { username, password } = req.body;
   try{
-  const result = await sequelize.query(`
-    SELECT * FROM employees,roles WHERE employees.username = '${username}' AND employees.role_id = roles.id `)
-  console.log(result[0][0])
+  const result = await employee.findOne({where:{username:username}},{include:[role]})
+  const role_name = await role.findOne({where: {id:result.role_id}})
+  console.log(result)
+  console.log(role_name.name)
   const data = {
-    username: result[0][0].username,
-    role_name:result[0][0].name,
-    id:result[0][0].id
+    username: result.username,
+    role_name:role_name.name,
+    id:result.id
   }
-    if (result[0][0]) {
-      if (bcrypt.compareSync(password, result[0][0].password)) {
+    if (result) {
+      if (bcrypt.compareSync(password, result.password)) {
         res.json({
           result: constants.kResultOk,
           message: data

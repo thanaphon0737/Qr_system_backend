@@ -29,6 +29,5 @@ const employee =  sequelize.define(
     },{ }
 );
 
-employee.belongsTo(role, { foreignKey:'role_id'});
 
 module.exports = employee;

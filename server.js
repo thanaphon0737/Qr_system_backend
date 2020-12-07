@@ -2,9 +2,10 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser")
+const sequelize = require("./db_instance");
 const customer = require('./models/customer')
 const discount = require('./models/discount')
-const discontCont = require('./models/discountConditional')
+const discontType = require('./models/discountType')
 const employee = require('./models/employees')
 const order = require('./models/order')
 const orderProduct = require('./models/orderProduct')
@@ -22,10 +23,10 @@ app.use(express.static(__dirname + "/uploaded"))
 
 app.use("/api/v2", require("./api"))
 
-
+// console.log(__dirname)
 customer.sync({ force: false });
 discount.sync({ force: false });
-discontCont.sync({ force: false });
+discontType.sync({ force: false });
 employee.sync({ force: false });
 order.sync({ force: false });
 orderProduct.sync({ force: false });
@@ -36,6 +37,8 @@ role.sync({ force: false });
 stockIn.sync({ force: false });
 stockInProduct.sync({ force: false });
 table.sync({ force: false });
+
+
 
 app.listen(8081, ()=>{
     console.log("Server is running..")

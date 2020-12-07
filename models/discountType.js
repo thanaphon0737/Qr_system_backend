@@ -1,8 +1,8 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./../db_instance");
-const discount = require('./discount')
-const discountCont = sequelize.define(
-    "discountCont",
+
+const discountType = sequelize.define(
+    "discountType",
     {
         name:{
             type: Sequelize.STRING
@@ -13,5 +13,5 @@ const discountCont = sequelize.define(
     }
 )
 
-discountCont.hasMany(discount)
-module.exports = discountCont;
+
+module.exports = discountType;

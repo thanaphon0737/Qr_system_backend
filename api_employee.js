@@ -3,8 +3,8 @@ const router = express.Router();
 const employee = require("./models/employees");
 const role = require("./models/roles");
 const constants = require("./constant");
-const Sequelize = require("sequelize");
-const sequelize = require("./db_instance");
+// const { sequelize } = require("./db_instance");
+
 
 router.get("/employee", async (req, res) => {
     const result = await employee.findAll({include:[role]})
@@ -12,6 +12,7 @@ router.get("/employee", async (req, res) => {
 });
 
 router.get("/role", async (req,res) => {
+    // console.log("role",db)
     const result = await role.findAll();
     res.json(result);
 })

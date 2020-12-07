@@ -16,10 +16,5 @@ const productType = sequelize.define(
 
 
 
-productType.associate = models =>{
-    productType.hasMany(models.product, {
-        onDelete: 'cascade'
-    })
-}
 
 module.exports = productType;

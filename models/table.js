@@ -10,6 +10,5 @@ const table = sequelize.define(
     }
 )
 
-table.hasMany(customer)
 
 module.exports = table;
