@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("./../db_instance");
-const order = require('./order')
+
 const orderStatus = sequelize.define(
     "orderStatus",
     {
@@ -13,6 +13,6 @@ const orderStatus = sequelize.define(
     }
 )
 
-orderStatus.hasMany(order)
+
 
 module.exports = orderStatus;

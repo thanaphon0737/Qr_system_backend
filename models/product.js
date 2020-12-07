@@ -27,14 +27,10 @@ const product = sequelize.define(
         // allowNull defaults to true
       },
       product_qty: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER
         // allowNull defaults to true
       },
-      product_type_id: {
-        type: Sequelize.INTEGER,
-            allowNull: false,
-            
-      },
+      
       note:{
         type: Sequelize.STRING
       }

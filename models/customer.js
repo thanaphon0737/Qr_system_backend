@@ -4,15 +4,11 @@ const order = require('./order')
 const customer = sequelize.define(
     "customer",
     {
-        table_id:{
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            
-        },
+        
         customer_name: {
             type: Sequelize.STRING,
             allowNull: false,
-            primaryKey: true
+            unique: true
         },
         url_image:{
             type: Sequelize.STRING,
@@ -30,6 +26,7 @@ const customer = sequelize.define(
         // options
     }
 );
+
 
 
 

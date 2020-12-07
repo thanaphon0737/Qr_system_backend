@@ -5,10 +5,7 @@ const order = require('./order');
 const discount = sequelize.define(
     "discount",
     {
-        discount_type_id:{
-            type: Sequelize.INTEGER,
-            allowNull: false,
-        },
+
         discount_code:{
             type: Sequelize.STRING
         },
@@ -16,7 +13,7 @@ const discount = sequelize.define(
             type: Sequelize.INTEGER
         },
         discount_amount:{
-            type: Sequelize.INTEGER,
+            type: Sequelize.DECIMAL,
 
         }
     }

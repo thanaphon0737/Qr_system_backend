@@ -12,8 +12,6 @@ router.post("/login", async (req, res) => {
   try{
   const result = await employee.findOne({where:{username:username}},{include:[role]})
   const role_name = await role.findOne({where: {id:result.role_id}})
-  console.log(result)
-  console.log(role_name.name)
   const data = {
     username: result.username,
     role_name:role_name.name,

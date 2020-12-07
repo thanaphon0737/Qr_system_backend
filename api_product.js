@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const product = require("./models/product");
+const productType = require('./models/productType')
 const Sequelize = require("sequelize");
 const formidable = require("formidable");
 const path = require("path")
@@ -13,18 +14,19 @@ router.get("/product", async (req, res) => {
   res.json(result);
 });
 
-router.get("/product", async (req, res) => {
-  const result = await product.findAll({ order: Sequelize.literal("id DESC") });
+router.get("/productType", async (req, res) => {
+  const result = await productType.findAll({ order: Sequelize.literal("id DESC") });
   res.json(result);
 });
 // Upload Image
 uploadImage = async (files, doc) => {
+  console.log(files)
   if (files.image != null) {
     var fileExtention = files.image.name.split(".")[1];
     doc.image = `${doc.product_name}.${fileExtention}`;
     var newpath = path.resolve(__dirname + "/uploaded/images/") + "/" + doc.image;    
 
-    if (fs.exists(newpath)) {
+    if (fs.stat(newpath)) {
       await fs.remove(newpath);
     }
     await fs.moveSync(files.image.path, newpath);
@@ -42,10 +44,11 @@ router.post("/product", (req, res) => {
   try {
     const form = new formidable.IncomingForm();
     form.parse(req, async (error, fields, files) => {
+      console.log('add:',fields)
       let result = await product.create(fields);
-      console.log('files', files)
+
       result = await uploadImage(files, result);
-      console.log(result)
+
       res.json({
         result: constants.kResultOk,
         message: JSON.stringify(result)
@@ -60,6 +63,7 @@ router.put("/product", (req, res)=>{
   try {
     const form = new formidable.IncomingForm();
     form.parse(req, async (error, fields, files) => {
+      console.log(fields)
       let result = await product.update(fields, {where : {id: fields.id}});
       
       result = await uploadImage(files, fields);

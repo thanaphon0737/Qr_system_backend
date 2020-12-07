@@ -7,7 +7,7 @@ function customerTable(sequelize) {
 
 function roleEmployee(sequelize){
     const {role, employee} = sequelize.models;
-    // role.hasMany(employees, {foreignKey:'role_id'});
+    role.hasMany(employee, {foreignKey:'role_id'});
     employee.belongsTo(role, {foreignKey:'role_id'});
 }
 
@@ -43,8 +43,8 @@ function discountTypeTodiscount(sequelize){
 
 function orderProductStatusToOrderProduct(sequelize){
     const { orderProductStatus, orderProduct} = sequelize.models;
-    // orderProductStatus.hasMany(orderProduct, {foreignKey:'order_product_status_id'});
-    // orderProduct.belongsTo(orderProductStatus, {foreignKey:'order_product_status_id'});
+    orderProductStatus.hasMany(orderProduct, {foreignKey:'order_product_status_id'});
+    orderProduct.belongsTo(orderProductStatus, {foreignKey:'order_product_status_id'});
 }
 
 function productToOrderProduct(sequelize){

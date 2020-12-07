@@ -22,9 +22,7 @@ router.post("/role", async (req, res) => {
     try {
         
         const result = await role.create({name:req.body.name});
-        
-        
-        console.log(result)
+
         res.json({ result: constants.kResultOk, message: JSON.stringify(result) });
         
     } catch (error) {
@@ -35,14 +33,20 @@ router.post("/role", async (req, res) => {
 
 router.get("/employee/id/:id", async (req, res)=>{
     
-    let result = await await sequelize.query(`
-    SELECT * FROM employees,roles WHERE employees.id = '${req.params.id}' AND employees.role_id = roles.id `)
-    console.log(result[0][0])
-    
+    const result =  await employee.findOne({where:{id:req.params.id}});
+    const roleObj = await role.findOne({where:{id:result.role_id}});
+    const data = {
+      username:result.username,
+      first_name:result.first_name,
+      last_name:result.last_name,
+      contact:result.contact,
+      role_name:roleObj.name
+
+    }
     try {
         res.json({
             result: constants.kResultOk,
-            message: JSON.stringify(result[0][0])
+            message: data
         });
       
     } catch (error) {
@@ -52,8 +56,7 @@ router.get("/employee/id/:id", async (req, res)=>{
 
 
   router.put("/employee/id/:id", async (req, res)=>{
-      console.log("hellow form front")
-      console.log(req.body)
+      
     try {
         const role_id_query = await role.findOne({where: {name: req.body.role}});
         const result = await employee.update(
@@ -70,7 +73,8 @@ router.get("/employee/id/:id", async (req, res)=>{
             message: JSON.stringify(result)
         });
     } catch (error) {
-      res.json({ result: constants.kResultNok, message: req.body });
+      
+      res.json({ result: constants.kResultNok, message: error });
     }
   })
 

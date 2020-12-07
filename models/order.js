@@ -5,29 +5,14 @@ const discount = require('./discount');
 const order = sequelize.define(
     "order",
     {
-        customer_id:{
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            
-        },
-        discount_id: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            
-        },
         order_date: {
             type: Sequelize.DATE,
             allowNull: false,
         },
         total_price: {
-            type: Sequelize.STRING,
+            type: Sequelize.DECIMAL,
             allowNull: false,
-            defaultValue: "-"
-        },
-        order_status_id:{
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            
+            defaultValue: 0
         },
         note: {
             type: Sequelize.STRING,
