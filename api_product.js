@@ -10,7 +10,7 @@ const constants = require("./constant");
 
 
 router.get("/product", async (req, res) => {
-  const result = await product.findAll({ order: Sequelize.literal("id DESC") });
+  const result = await product.findAll({include:[{model:productType}]});
   res.json(result);
 });
 
@@ -18,6 +18,24 @@ router.get("/productType", async (req, res) => {
   const result = await productType.findAll({ order: Sequelize.literal("id DESC") });
   res.json(result);
 });
+
+router.post("/productType", async(req, res) =>{
+  const data = {
+    name:req.body.name,
+    note:req.body.note
+  }
+  console.log(data)
+  try{
+    const result = await productType.create(data)
+      res.json({
+        result: constants.kResultOk,
+        message: JSON.stringify(result)
+      })
+  }catch(error){
+    res.json({ result: constants.kResultNok, message: JSON.stringify(error) });
+  }
+  
+})
 // Upload Image
 uploadImage = async (files, doc) => {
   console.log(files)
@@ -93,9 +111,23 @@ router.delete("/product/id/:id", async (req, res)=>{
 
 router.get("/product/id/:id", async (req, res)=>{
   try{
-      let result = await product.findOne({where:{id: req.params.id}})
-      if (result){
-          res.json(result)
+      let result = await product.findOne({where:{id: req.params.id}});
+      let product_type = await productType.findOne({where:{id:result.product_type_id}});
+      let data = {
+        id:result.id,
+        product_name:result.product_name,
+        product_serving:result.product_serving,
+        product_image:result.product_image,
+        product_sell_price:result.product_sell_price,
+        product_buy_price:result.product_buy_price,
+        product_qty:result.product_qty,
+        note:result.note,
+        product_type_id:result.product_type_id,
+        product_type_name:product_type.name
+      }
+      
+      if (data){
+          res.json(data)
       }else{
           res.json({});
       }
