@@ -50,7 +50,7 @@ router.post('/orderProduct', async (req,res) =>{
             
             totalPrice += productPrice.product_sell_price;
             const result = await orderProduct.create({
-                 order_id: req.body.data[i].order_id,
+                 order_id: req.body.data[0].order_id,
                  order_product_status_id: req.body.data[i].order_product_status_id,
                  order_qty: req.body.data[i].order_qty,
                  price: productPrice.product_sell_price,
@@ -58,7 +58,7 @@ router.post('/orderProduct', async (req,res) =>{
             });
             results.push(result)
         }
-        // let updateTotal = await order.update()
+        let updateTotal = await order.update({total_price:totalPrice},{where:{id:req.body.data[0].order_id}})
 
 
         res.json({
