@@ -30,8 +30,6 @@ router.post("/customer", async (req, res) => {
         }
         const result = await customer.create(data);
         
-        
-        console.log(result)
         res.json({ result: constants.kResultOk, message: JSON.stringify(result) });
         
     } catch (error) {
@@ -40,6 +38,22 @@ router.post("/customer", async (req, res) => {
     }
 });
 
+router.put("/customer", async(req, res) => {
+    console.log(req.body)
+    const data = {
+        customer_name: req.body.customer_name,
+        table_id: req.body.table_id
+    }
+    try{
+        let result = await customer.update(data, {where:{id: req.body.id}});
+        res.json({
+            result: constants.kResultOk,
+            message: result
+        })
+    }catch(error){
+        res.json(400).json(error)
+    }
+})
 router.get('/customer/:id', (req,res)=> {
     res.end(`this is table${req.params.id}`);
 })
