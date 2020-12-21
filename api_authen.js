@@ -4,8 +4,7 @@ const employee = require("./models/employees");
 const role = require("./models/roles")
 const bcrypt = require("bcryptjs");
 const constants = require("./constant");
-const sequelize = require("./db_instance");
-const { QueryTypes } = require('sequelize');
+
 router.post("/login", async (req, res) => {
   console.log("login: " + JSON.stringify(req.body));
   const { username, password } = req.body;

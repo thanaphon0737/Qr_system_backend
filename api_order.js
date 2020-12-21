@@ -6,8 +6,10 @@ const orderStatus = require('./models/orderStatus')
 const orderProduct = require('./models/orderProduct');
 const orderProductStatus = require("./models/orderProductStatus");
 const product = require("./models/product");
+const sequelize = require("./db_instance")
 router.get('/order',async (req,res) => {
     const result = await order.findAll({include:[orderStatus]})
+    
     res.json(result)
 });
 
@@ -44,11 +46,10 @@ router.post('/orderProduct', async (req,res) =>{
     let results = [];
     console.log(req.body.data.length)
     try{
-        let totalPrice =0;
         for(let i =0; i<req.body.data.length; i++){
             let productPrice = await product.findOne({where:{id:req.body.data[i].product_id}})
             
-            totalPrice += productPrice.product_sell_price;
+            
             const result = await orderProduct.create({
                  order_id: req.body.data[0].order_id,
                  order_product_status_id: req.body.data[i].order_product_status_id,
@@ -58,7 +59,10 @@ router.post('/orderProduct', async (req,res) =>{
             });
             results.push(result)
         }
-        let updateTotal = await order.update({total_price:totalPrice},{where:{id:req.body.data[0].order_id}})
+        totalPrice = await sequelize.query("SELECT sum(price*order_qty) as sumPrice from orderProducts");
+        // condsole.log(totalPrice)
+        // totalPrice = 0;
+        let updateTotal = await order.update({total_price:totalPrice[0][0].sumPrice},{where:{id:req.body.data[0].order_id}})
 
 
         res.json({

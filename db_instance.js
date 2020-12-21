@@ -4,39 +4,19 @@ const sequelize = new Sequelize({
   storage: "./database.sqlite",
   logging: false
 });
-// const {customerTable, roleEmployee,customerOrder,orderStatusOrder,
-//   orderToOrderProduct,discountOrder,discountTypeTodiscount,orderProductStatusToOrderProduct
-//   ,productToOrderProduct, productTypeToProduct,productTostockInProduct,stockInTostockInProduct} = require('./relation')
-// const db = [
-// 	  require('./models/customer'),
-//     require('./models/discount'),
-//     require('./models/discountType'),
-//     require('./models/employees'),
-//     require('./models/order'),
-//     require('./models/orderProduct'),
-//     require('./models/orderStatus'),
-//     require('./models/product'),
-//     require('./models/productType'),
-//     require('./models/roles'),
-//     require('./models/stockIn'),
-//     require('./models/stockInProduct'),
-//     require('./models/table')
 
-// ]
+// const sequelize = new Sequelize({
+//   username: "postgres",
+//   password: "1234",
+//   database: "QOFR_db",
+//   host:"127.0.0.1",
+//   post:5432,
+//   dialect: "postgres",
+//   logging: false
+// });
 
-// We execute any extra setup after the models are defined, such as adding associations.
-// customerTable(sequelize);
-// roleEmployee(sequelize);
-// customerOrder(sequelize);
-// orderStatusOrder(sequelize);
-// orderToOrderProduct(sequelize);
-// discountOrder(sequelize);
-// discountTypeTodiscount(sequelize);
-// orderProductStatusToOrderProduct(sequelize);
-// productToOrderProduct(sequelize);
-// productTypeToProduct(sequelize);
-// productTostockInProduct(sequelize);
-// stockInTostockInProduct(sequelize);
+
+
 (async () => {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
