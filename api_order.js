@@ -6,7 +6,7 @@ const orderStatus = require('./models/orderStatus')
 const orderProduct = require('./models/orderProduct');
 const orderProductStatus = require("./models/orderProductStatus");
 const product = require("./models/product");
-const sequelize = require("./db_instance")
+const sequelize = require("./db_instance");
 router.get('/order',async (req,res) => {
     const result = await order.findAll({include:[orderStatus]})
     
@@ -22,7 +22,7 @@ router.post('/order', async (req,res) =>{
             customer_id: req.body.customer_id,
             order_status_id:req.body.order_status_id,
             discount_id: null
-        });
+        }, {returning: true});
         res.json(result)
     }catch(e){
         res.status(400).json(e)
@@ -44,11 +44,9 @@ router.post('/orderStatus', async (req,res) =>{
 
 router.post('/orderProduct', async (req,res) =>{
     let results = [];
-    console.log(req.body.data.length)
     try{
         for(let i =0; i<req.body.data.length; i++){
             let productPrice = await product.findOne({where:{id:req.body.data[i].product_id}})
-            
             
             const result = await orderProduct.create({
                  order_id: req.body.data[0].order_id,
@@ -59,10 +57,8 @@ router.post('/orderProduct', async (req,res) =>{
             });
             results.push(result)
         }
-        totalPrice = await sequelize.query("SELECT sum(price*order_qty) as sumPrice from orderProducts");
-        // condsole.log(totalPrice)
-        // totalPrice = 0;
-        let updateTotal = await order.update({total_price:totalPrice[0][0].sumPrice},{where:{id:req.body.data[0].order_id}})
+        totalPrice = await sequelize.query(`SELECT sum(price*order_qty) as sum_price from public."orderProducts"`);
+        let updateTotal = await order.update({total_price:totalPrice[0][0].sum_price},{where:{id:req.body.data[0].order_id}})
 
 
         res.json({
@@ -70,7 +66,8 @@ router.post('/orderProduct', async (req,res) =>{
             message: results
         })
     }catch(e){
-        res.status(400).end(e)
+        console.log(e)
+        res.status(400)
     }
 })
 
@@ -105,7 +102,6 @@ router.get('/orderProduct/order-id/:id',async (req, res) =>{
                 product_status_name: statusName.name,
                 price: result[i].price
             }
-        console.log(data)
         datas.push(data)    
         }
         
