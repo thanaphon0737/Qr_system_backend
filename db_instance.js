@@ -5,21 +5,24 @@ const Sequelize = require("sequelize");
 //   logging: false
 // });
 
-const sequelize = new Sequelize({
-  username: "postgres",
-  password: "1234",
-  database: "QOFR_db",
-  host:"127.0.0.1",
-  post:5432,
-  dialect: "postgres",
+// const sequelize = new Sequelize({
+//   username: "postgres",
+//   password: "1234",
+//   database: "postgres",
+//   host:"127.0.0.1",
+//   post:5432,
+//   dialect: "postgres",
+//   logging: false
+// });
+
+const sequelize = new Sequelize('qrsystem', 'root', '1234', {
+  dialect: 'mariadb',
   logging: false
-});
+})
 
-
-
-(async () => {
+async () => {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
-})();
+};
 
 module.exports = sequelize;

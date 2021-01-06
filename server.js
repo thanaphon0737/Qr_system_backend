@@ -21,7 +21,7 @@ app.get('/', (req,res)=>{
 app.use("/api/v2", require("./api"))
 
 io.on("connection", socket =>{
-    console.log("connected by " + socket.id);
+    // console.log("connected by " + socket.id);
     
     socket.on('addFood',(data) =>{
         console.log(data)

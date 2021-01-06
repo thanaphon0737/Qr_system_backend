@@ -44,30 +44,63 @@ router.post('/orderStatus', async (req,res) =>{
 
 router.post('/orderProduct', async (req,res) =>{
     let results = [];
+    console.log(req.body)
     try{
-        for(let i =0; i<req.body.data.length; i++){
+        //check if out of stock
+        let collect_error = []
+        for(let i =0 ; i<req.body.data.length; i++){
             let productPrice = await product.findOne({where:{id:req.body.data[i].product_id}})
-            
-            const result = await orderProduct.create({
-                 order_id: req.body.data[0].order_id,
-                 order_product_status_id: req.body.data[i].order_product_status_id,
-                 order_qty: req.body.data[i].order_qty,
-                 price: productPrice.product_sell_price,
-                 product_id: req.body.data[i].product_id
-            });
-            results.push(result)
+            let pre_qty = productPrice.product_qty
+            if(pre_qty-req.body.data[i].order_qty < 0){
+                const outStockError = {
+                    product_name:productPrice.product_name,
+                    message: `stock have ${req.body.data[i].order_qty}/${pre_qty}`
+                }
+                collect_error.push(outStockError)
+            }
         }
-        totalPrice = await sequelize.query(`SELECT sum(price*order_qty) as sum_price from public."orderProducts"`);
-        let updateTotal = await order.update({total_price:totalPrice[0][0].sum_price},{where:{id:req.body.data[0].order_id}})
+        if(collect_error.length <= 0){
+            //create order header
+            let createdOrder = await order.create({
+                order_date: Date.now(),
+                total_price: 0,
+                note: "",
+                customer_id: req.body.createOrder.customer_id, // {createOrder}
+                order_status_id:req.body.createOrder.order_status_id,//
+                discount_id: null
+            }, {returning: true});
 
+            console.log('Order',createdOrder.id)
 
-        res.json({
-            result: constants.kResultOk,
-            message: results
-        })
+            for(let i =0; i<req.body.data.length; i++){
+                let productPrice = await product.findOne({where:{id:req.body.data[i].product_id}})
+                let pre_qty = productPrice.product_qty
+                await product.update({product_qty:pre_qty-req.body.data[i].order_qty},{where:{id:req.body.data[i].product_id}})
+                const result = await orderProduct.create({
+                     order_id: createdOrder.id,
+                     order_product_status_id: req.body.data[i].order_product_status_id,
+                     order_qty: req.body.data[i].order_qty,
+                     price: productPrice.product_sell_price,
+                     product_id: req.body.data[i].product_id
+                });
+                results.push(result)
+            }
+            totalPrice = await sequelize.query(`SELECT sum(price*order_qty) as sum_price from orderproducts`);
+            let updateTotal = await order.update({total_price:totalPrice[0][0].sum_price},{where:{id:createdOrder.id}})
+    
+    
+            res.json({
+                result: constants.kResultOk,
+                message: results
+            })
+        }else {
+            e_obj = {status:'out of stock', collect_error}
+            throw JSON.stringify(e_obj)
+        }
+        
     }catch(e){
         console.log(e)
-        res.status(400)
+        res.json(e)
     }
 })
 
