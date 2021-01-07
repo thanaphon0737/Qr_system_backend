@@ -4,9 +4,10 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const dbCaller = require("./db_define");
 const server = require('http').Server(app);
+
 const io = require('socket.io')(server, {
         cors: {
-          origin: "http://localhost:8080",
+          origin: "http://192.168.1.22:8080",
           methods: ["GET", "POST"]
         }
 });
@@ -21,11 +22,14 @@ app.get('/', (req,res)=>{
 app.use("/api/v2", require("./api"))
 
 io.on("connection", socket =>{
-    // console.log("connected by " + socket.id);
-    
-    socket.on('addFood',(data) =>{
-        console.log(data)
-        io.sockets.emit('toChef',data)
+    console.log("connected by " + socket.id);
+    socket.on("initial_data", async () => {
+        const getOrder = await require('./api_order').getOrder()
+        // console.log(getOrder)
+        io.sockets.emit('getData',getOrder)
+      });
+    socket.on("putOrder", () => {
+        io.sockets.emit("changeData");
     });
     
 })

@@ -7,9 +7,23 @@ const orderProduct = require('./models/orderProduct');
 const orderProductStatus = require("./models/orderProductStatus");
 const product = require("./models/product");
 const sequelize = require("./db_instance");
-router.get('/order',async (req,res) => {
-    const result = await order.findAll({include:[orderStatus]})
+
+
+async function getOrder(){
+    return new Promise(async function (data,err){
+        try{
+            const result = await order.findAll({include:[orderStatus]})
+            data(result)
+        }catch(err){
+            err(err)
+        }
     
+    })
+    
+}
+
+router.get('/order',async (req,res) => {
+    const result = await getOrder();
     res.json(result)
 });
 
@@ -44,7 +58,7 @@ router.post('/orderStatus', async (req,res) =>{
 
 router.post('/orderProduct', async (req,res) =>{
     let results = [];
-    console.log(req.body)
+    // console.log(req.body)
     try{
         //check if out of stock
         let collect_error = []
@@ -70,7 +84,7 @@ router.post('/orderProduct', async (req,res) =>{
                 discount_id: null
             }, {returning: true});
 
-            console.log('Order',createdOrder.id)
+            // console.log('Order',createdOrder.id)
 
             for(let i =0; i<req.body.data.length; i++){
                 let productPrice = await product.findOne({where:{id:req.body.data[i].product_id}})
@@ -99,7 +113,7 @@ router.post('/orderProduct', async (req,res) =>{
         }
         
     }catch(e){
-        console.log(e)
+        // console.log(e)
         res.json(e)
     }
 })
@@ -143,4 +157,4 @@ router.get('/orderProduct/order-id/:id',async (req, res) =>{
         res.status(400).json(e)
     }
 })
-module.exports = router;
+module.exports = {router, getOrder};
