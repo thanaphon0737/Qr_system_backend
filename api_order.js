@@ -22,11 +22,50 @@ async function getOrder(){
     
 }
 
+async function getOrderProduct(){
+    return new Promise(async function (data,err){
+        try{
+            const result = await orderProduct.findAll({include:[product,orderProductStatus]})
+            data(result)
+        }catch(err){
+            console.log(err)
+        }
+    
+    })
+    
+}
+
+function changeOrderProductStatus(id, status_id){
+    return new Promise(async function (resolve, reject){
+        try{
+            
+            const result = await orderProduct.update({order_product_status_id:status_id},{where:{id:id}})
+            resolve(result)
+        }catch(err){
+            console.log(err)
+        }
+    })
+}
+
+router.put('/orderProductStatus', async (req,res) =>{
+    const id = req.body.id
+    const status_id = req.body.status_id
+    const result = await changeOrderProductStatus(id, status_id)
+    res.json({
+        result: constants.kResultOk,
+        message: result
+    })
+
+})
 router.get('/order',async (req,res) => {
     const result = await getOrder();
     res.json(result)
 });
 
+router.get('/orderProduct',async (req,res) => {
+    const result = await getOrderProduct();
+    res.json(result)
+});
 router.post('/order', async (req,res) =>{
     try{
         let result = await order.create({
@@ -99,7 +138,7 @@ router.post('/orderProduct', async (req,res) =>{
                 });
                 results.push(result)
             }
-            totalPrice = await sequelize.query(`SELECT sum(price*order_qty) as sum_price from orderproducts`);
+            totalPrice = await sequelize.query(`SELECT sum(price*order_qty) as sum_price from orderproducts where order_id = ${createdOrder.id}`);
             let updateTotal = await order.update({total_price:totalPrice[0][0].sum_price},{where:{id:createdOrder.id}})
     
     
@@ -157,4 +196,4 @@ router.get('/orderProduct/order-id/:id',async (req, res) =>{
         res.status(400).json(e)
     }
 })
-module.exports = {router, getOrder};
+module.exports = {router, getOrder, getOrderProduct,changeOrderProductStatus};
