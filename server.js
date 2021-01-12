@@ -8,7 +8,7 @@ const server = require('http').Server(app);
 
 const io = require('socket.io')(server, {
         cors: {
-          origin: "http://192.168.1.22:8080",
+          origin: "http://10.80.87.108:8080",
           methods: ["GET", "POST"]
         }
 });
@@ -43,6 +43,8 @@ io.on("connection", socket =>{
         const updateResult = await require('./api_order').changeOrderProductStatus(id,status_id)
         io.sockets.emit("changeData");
     })
+
+    
     
 })
 

@@ -25,7 +25,7 @@ async function getOrder(){
 async function getOrderProduct(){
     return new Promise(async function (data,err){
         try{
-            const result = await orderProduct.findAll({include:[product,orderProductStatus]})
+            const result = await orderProduct.findAll({include:[product,orderProductStatus,order]})
             data(result)
         }catch(err){
             console.log(err)
@@ -196,4 +196,21 @@ router.get('/orderProduct/order-id/:id',async (req, res) =>{
         res.status(400).json(e)
     }
 })
+
+router.get('/orderProduct/customer-id/:id', async (req, res) =>{
+    
+    try{
+        const result = await orderProduct.findAll({include:[product,orderProductStatus,order]})
+        if(result[0].order.customer_id != req.params.id) throw 0
+        function checkCustomer(data){
+            return data.order.customer_id = req.params.id
+        }
+
+        res.json(result.filter(checkCustomer)) 
+    }catch(e){
+        console.log(e)
+        res.status(400).json(e)
+    }
+})
+
 module.exports = {router, getOrder, getOrderProduct,changeOrderProductStatus};
