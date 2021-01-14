@@ -5,10 +5,10 @@ const bodyParser = require("body-parser");
 const dbCaller = require("./db_define");
 const { stat } = require("fs");
 const server = require('http').Server(app);
-
+const ip = '192.168.1.22';
 const io = require('socket.io')(server, {
   cors: {
-    origin: "http://10.80.87.151:8080",
+    origin: `http://${ip}:8080`,
     methods: ["GET", "POST"]
   }
 });
@@ -52,7 +52,9 @@ io.on("connection", socket => {
     io.sockets.emit("changeData");
   })
 
-
+  socket.on("payOrder", ()=>{
+    io.sockets.emit("changeData")
+  })
 
 
 

@@ -217,6 +217,21 @@ async function getOrderProductByCustomerId(id) {
     })
 
 }
+
+async function putOrderProductByCustomerId(id,status_id){
+    return new Promise(async function (resolve, reject){
+        try{
+        const result = await sequelize.query(`
+        UPDATE orderproducts as A
+        INNER JOIN orders as B ON A.order_id = B.id
+        SET order_product_status_id = ${status_id}
+        WHERE B.customer_id = ${id}`);
+        resolve(result)
+        } catch(err){
+            reject(err)
+        }
+    })
+}
 router.get('/orderProduct/customer-id/:id', async (req, res) => {
 
     try {
@@ -229,11 +244,10 @@ router.get('/orderProduct/customer-id/:id', async (req, res) => {
     }
 })
 
-router.post('/orderProduct/customer-id/:id', async (req, res) => {
+router.put('/orderProduct/customer-id/:id', async (req, res) => {
 
     try {
-        const result = await orderProduct.update({ order_product_status_id: req.body.status_id }, { where: {} })
-
+        const result = await putOrderProductByCustomerId(req.params.id, req.body.status_id)
 
         res.json(result)
     } catch (e) {
@@ -242,4 +256,4 @@ router.post('/orderProduct/customer-id/:id', async (req, res) => {
     }
 })
 
-module.exports = { router, getOrder, getOrderProduct, changeOrderProductStatus ,getOrderProductByCustomerId};
+module.exports = { router, getOrder, getOrderProduct, changeOrderProductStatus ,getOrderProductByCustomerId, putOrderProductByCustomerId};
