@@ -20,6 +20,11 @@ const customer = sequelize.define(
         },
         timestamp_out:{
             type: Sequelize.DATE
+        },
+        total_price:{
+            type: Sequelize.DECIMAL,
+            allowNull: false,
+            defaultValue: 0
         }
     },
     {
