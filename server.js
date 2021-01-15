@@ -6,9 +6,10 @@ const dbCaller = require("./db_define");
 const { stat } = require("fs");
 const server = require('http').Server(app);
 const ip = '192.168.1.22';
+const ip2 = '10.80.87.151';
 const io = require('socket.io')(server, {
   cors: {
-    origin: `http://${ip}:8080`,
+    origin: `http://${ip2}:8080`,
     methods: ["GET", "POST"]
   }
 });

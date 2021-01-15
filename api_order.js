@@ -9,6 +9,7 @@ const product = require("./models/product");
 const sequelize = require("./db_instance");
 
 
+
 async function getOrder() {
     return new Promise(async function (data, err) {
         try {
@@ -226,6 +227,7 @@ async function putOrderProductByCustomerId(id,status_id){
         INNER JOIN orders as B ON A.order_id = B.id
         SET order_product_status_id = ${status_id}
         WHERE B.customer_id = ${id}`);
+        await order.update({order_status_id:2},{where:{customer_id:id}})
         resolve(result)
         } catch(err){
             reject(err)
@@ -253,6 +255,20 @@ router.put('/orderProduct/customer-id/:id', async (req, res) => {
     } catch (e) {
         console.log(e)
         res.status(400).json(e)
+    }
+})
+
+router.get('/ordersPriceAllYear', async (req, res) =>{
+    try{
+        const result = await sequelize.query(`
+        SELECT SUM(total_price) as totalPriceInMonth, MONTH(order_date) as Month, YEAR(order_date) as Year
+        FROM orders
+        WHERE orders.order_status_id = 2
+        GROUP BY Month
+        `)
+        res.json(result[0])
+    }catch(err){
+        res.status(400).send(err)
     }
 })
 
