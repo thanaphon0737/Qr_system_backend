@@ -21,7 +21,12 @@ const employee =  sequelize.define(
         },
         contact:{
             type: Sequelize.STRING
-        }
+        },
+        salary: {
+            type: Sequelize.DECIMAL,
+            allowNull: false,
+            defaultValue: 0
+        },
 
     },{ }
 );
