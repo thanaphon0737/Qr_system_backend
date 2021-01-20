@@ -13,7 +13,7 @@ const customer = sequelize.define(
         url_image:{
             type: Sequelize.STRING,
             allowNull: false,
-            defaultValue: "-"
+            defaultValue: ""
         },
         timestamp_in:{
             type: Sequelize.DATE
