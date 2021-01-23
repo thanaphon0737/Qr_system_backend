@@ -226,8 +226,20 @@ async function putOrderProductByCustomerId(id,status_id){
         UPDATE orderproducts as A
         INNER JOIN orders as B ON A.order_id = B.id
         SET order_product_status_id = ${status_id}
-        WHERE B.customer_id = ${id}`);
-        await order.update({order_status_id:2},{where:{customer_id:id}})
+        WHERE B.customer_id = ${id}
+        AND A.order_product_status_id <> 999`);
+        let checkSuccess = await getOrderProductByCustomerId(id)
+        let checkflag = false;
+        checkSuccess.forEach(async(el) =>{
+            if(el.order_product_status_id == 999){
+                await order.update({order_status_id:1},{where:{customer_id:id}})
+                checkflag = true;
+                return
+            }
+        })
+        if(!checkflag){
+            await order.update({order_status_id:2},{where:{customer_id:id}})
+        }
         resolve(result)
         } catch(err){
             reject(err)

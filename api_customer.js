@@ -3,6 +3,7 @@ const router = express.Router();
 const customer = require("./models/customer");
 const constants = require("./constant");
 const table = require('./models/table');
+const order = require("./models/order");
 
 function getCustomerAll(){
     return new Promise(async (resolve, reject) =>{
@@ -136,6 +137,7 @@ router.put('/updatePriceCustomer', async (req, res) =>{
 
         let result = await customer.update({total_price: req.body.totalPrice},{where:{id:req.body.id}})
         res.json(result)
+        
     }catch(err){
         res.json(err)
     }
