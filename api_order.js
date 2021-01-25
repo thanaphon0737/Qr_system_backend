@@ -205,7 +205,7 @@ async function getOrderProductByCustomerId(id) {
             const result = await orderProduct.findAll({ include: [product, orderProductStatus, order] })
             let filterdata = [];
             result.forEach(element => {
-                if(element.order.customer_id == id){
+                if (element.order.customer_id == id) {
 
                     filterdata.push(element)
                 }
@@ -219,29 +219,29 @@ async function getOrderProductByCustomerId(id) {
 
 }
 
-async function putOrderProductByCustomerId(id,status_id){
-    return new Promise(async function (resolve, reject){
-        try{
-        const result = await sequelize.query(`
+async function putOrderProductByCustomerId(id, status_id) {
+    return new Promise(async function (resolve, reject) {
+        try {
+            const result = await sequelize.query(`
         UPDATE orderproducts as A
         INNER JOIN orders as B ON A.order_id = B.id
         SET order_product_status_id = ${status_id}
         WHERE B.customer_id = ${id}
         AND A.order_product_status_id <> 999`);
-        let checkSuccess = await getOrderProductByCustomerId(id)
-        let checkflag = false;
-        checkSuccess.forEach(async(el) =>{
-            if(el.order_product_status_id == 999){
-                await order.update({order_status_id:1},{where:{customer_id:id}})
-                checkflag = true;
-                return
+            let checkSuccess = await getOrderProductByCustomerId(id)
+            let checkflag = false;
+            checkSuccess.forEach(async (el) => {
+                if (el.order_product_status_id == 999) {
+                    await order.update({ order_status_id: 1 }, { where: { customer_id: id } })
+                    checkflag = true;
+                    return
+                }
+            })
+            if (!checkflag) {
+                await order.update({ order_status_id: 2 }, { where: { customer_id: id } })
             }
-        })
-        if(!checkflag){
-            await order.update({order_status_id:2},{where:{customer_id:id}})
-        }
-        resolve(result)
-        } catch(err){
+            resolve(result)
+        } catch (err) {
             reject(err)
         }
     })
@@ -250,7 +250,7 @@ router.get('/orderProduct/customer-id/:id', async (req, res) => {
 
     try {
         const result = await getOrderProductByCustomerId(req.params.id)
-    
+
         res.json(result)
     } catch (e) {
         console.log(e)
@@ -270,8 +270,8 @@ router.put('/orderProduct/customer-id/:id', async (req, res) => {
     }
 })
 
-router.get('/ordersPriceAllYear', async (req, res) =>{
-    try{
+router.get('/ordersPriceAllYear', async (req, res) => {
+    try {
         const result = await sequelize.query(`
         SELECT SUM(total_price) as totalPriceInMonth, MONTH(order_date) as Month, YEAR(order_date) as Year
         FROM orders
@@ -279,9 +279,23 @@ router.get('/ordersPriceAllYear', async (req, res) =>{
         GROUP BY Month
         `)
         res.json(result[0])
-    }catch(err){
+    } catch (err) {
         res.status(400).send(err)
     }
 })
 
-module.exports = { router, getOrder, getOrderProduct, changeOrderProductStatus ,getOrderProductByCustomerId, putOrderProductByCustomerId};
+router.get('/orderTypeQtyAllTime', async (req, res) => {
+    try {
+        const result = await sequelize.query(`
+        SELECT B.product_name, SUM(A.order_qty) as qty
+        FROM orderproducts as A 
+        INNER JOIN products as B on A.product_id = B.id
+        WHERE A.order_product_status_id = 5
+        GROUP BY B.product_name
+        ORDER BY B.id`)
+        res.json(result[0])
+    } catch (err) {
+        res.status(400).send(err)
+    }
+})
+module.exports = { router, getOrder, getOrderProduct, changeOrderProductStatus, getOrderProductByCustomerId, putOrderProductByCustomerId };

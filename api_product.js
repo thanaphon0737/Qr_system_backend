@@ -3,6 +3,7 @@ const router = express.Router();
 const product = require("./models/product");
 const productType = require('./models/productType')
 const Sequelize = require("sequelize");
+const sequelize = require("./db_instance");
 const formidable = require("formidable");
 const path = require("path")
 const fs = require("fs-extra");
@@ -136,4 +137,15 @@ router.get("/product/id/:id", async (req, res)=>{
   }
 })
 
+router.get('/getAllProductName', async (req, res) =>{
+  try{
+    const result = await sequelize.query(`SELECT product_name 
+    FROM products
+    GROUP BY id`)
+    res.json(result[0])
+  }catch(err){
+    console.log(err)
+    res.json(err)
+  }
+})
 module.exports = router;
