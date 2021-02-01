@@ -40,7 +40,8 @@ router.get("/employee/id/:id", async (req, res)=>{
       first_name:result.first_name,
       last_name:result.last_name,
       contact:result.contact,
-      role_name:roleObj.name
+      role_name:roleObj.name,
+      salary:result.salary
 
     }
     try {
@@ -64,7 +65,8 @@ router.get("/employee/id/:id", async (req, res)=>{
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             role_id : Number(role_id_query.id.toString()),
-            contact: req.body.contact
+            contact: req.body.contact,
+            salary:req.body.salary
         },
          {where : {id: req.params.id}});
         // console.log(role_id_query.id)
@@ -78,6 +80,13 @@ router.get("/employee/id/:id", async (req, res)=>{
     }
   })
 
+  router.put('/employeeSalary', async (req,res) =>{
+    try{
+      const result = await employee.update({salary:req.body.salary},{where:{id:req.body.id}})
+    }catch(err){
+      console.log(err)
+    }
+  })
   router.delete("/employee/id/:id", async (req, res)=>{
     try{
       const {id} = req.params

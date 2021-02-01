@@ -142,4 +142,12 @@ router.put('/updatePriceCustomer', async (req, res) =>{
         res.json(err)
     }
 })
+
+router.put('/useDiscount/id/:id', async (req, res) =>{
+    try{
+        
+    }catch(err){
+
+    }
+})
 module.exports = {router,getCustomerById, getCustomerAll,addCustomer,getCustomerTableById};
