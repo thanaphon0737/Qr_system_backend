@@ -298,4 +298,18 @@ router.get('/orderTypeQtyAllTime', async (req, res) => {
         res.status(400).send(err)
     }
 })
+
+router.put('/updatePriceinOrder', async(req,res) =>{
+    try{
+        req.body.forEach(async el =>{
+            let origTotalPrice = await order.findOne({where:{id:el.order_id}})
+            await order.update({total_price:origTotalPrice.total_price - el.totalPrice},{where:{id:el.order_id}})
+        })
+        
+        res.json({message:'success'})
+    }catch(err){
+        console.log(err)
+        res.json(err)
+    }
+})
 module.exports = { router, getOrder, getOrderProduct, changeOrderProductStatus, getOrderProductByCustomerId, putOrderProductByCustomerId };

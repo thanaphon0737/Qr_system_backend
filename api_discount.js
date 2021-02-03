@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const discountType = require('./models/discountType')
 const discount = require('./models/discount')
-const constants = require('./constant')
+const constants = require('./constant');
+const order = require("./models/order");
 router.get("/discountType", async (req, res) => {
   const result = await discountType.findAll();
   res.json(result);
@@ -16,8 +17,8 @@ router.get("/discount", async (req, res) => {
 router.get('/discount/:id', async (req, res) => {
   try {
 
-    const result = await discount.findOne({where:{id:req.params.id}});
-    
+    const result = await discount.findOne({ where: { id: req.params.id } });
+
     res.json(result);
   } catch (err) {
     console.log(err)
@@ -27,25 +28,25 @@ router.get('/discount/:id', async (req, res) => {
 router.put('/discount-edit/:id', async (req, res) => {
   try {
     data = {
-      discount_code:    req.body.discount_code,
-      discount_remain:  req.body.discount_remain,
-      discount_amount:  req.body.discount_amount,
+      discount_code: req.body.discount_code,
+      discount_remain: req.body.discount_remain,
+      discount_amount: req.body.discount_amount,
       discount_type_id: req.body.discount_type_id
     }
-    const result = await discount.update(data,{where:{id:req.params.id}})
+    const result = await discount.update(data, { where: { id: req.params.id } })
     res.json(result)
   } catch (err) {
     console.log(err)
   }
 })
 
-router.delete('/discount-delete/:id', async(req, res) =>{
-  try{
-    const {id} = req.params
-    let result = await discount.findOne({where: {id}})
+router.delete('/discount-delete/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    let result = await discount.findOne({ where: { id } })
     result = await discount.destroy({ where: { id: id } });
     res.json({ result: constants.kResultOk, message: JSON.stringify(result) });
-  }catch(err){
+  } catch (err) {
     console.log(err)
     res.json({ result: constants.kResultNok, message: JSON.stringify(err) });
   }
@@ -86,4 +87,30 @@ router.post("/discountType", async (req, res) => {
   }
 
 });
+
+router.put('/updatediscountInOrder', async (req, res) => {
+  try {
+
+    const result = await order.update({ discount_id: req.body.discount_id }, { where: { customer_id: req.body.customer_id } })
+    if (result) {
+      const findRemain = await discount.findOne({ where: { id: req.body.discount_id } })
+      const updateremainDiscount = await discount.update({ discount_remain: findRemain.discount_remain - 1 }, { where: { id: req.body.discount_id } })
+
+
+      const findOrderCustomer = await order.findAll({ where: { customer_id: req.body.customer_id } })
+      findOrderCustomer.forEach(async el => {
+        if (findRemain.discount_type_id == 1) {
+          await order.update({ total_price: el.total_price - findRemain.discount_amount/findOrderCustomer.length }, { where: { id: el.id } })
+        } else if (findRemain.discount_type_id == 2) {
+          await order.update({ total_price: el.total_price *(1 - findRemain.discount_amount/100) }, { where: { id: el.id } })
+        }
+      })
+
+    }
+    res.json(result)
+  } catch (err) {
+    console.log(err)
+    res.json(err)
+  }
+})
 module.exports = router;
