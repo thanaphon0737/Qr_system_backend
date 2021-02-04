@@ -5,12 +5,12 @@ const constants = require("./constant");
 const table = require('./models/table');
 const order = require("./models/order");
 
-function getCustomerAll(){
-    return new Promise(async (resolve, reject) =>{
-        try{
+function getCustomerAll() {
+    return new Promise(async (resolve, reject) => {
+        try {
             let result = await customer.findAll();
             resolve(result)
-        }catch(err){
+        } catch (err) {
             reject(err)
         }
     })
@@ -34,8 +34,8 @@ router.post("/table", async (req, res) => {
     }
 })
 
-function addCustomer(name,table_id){
-    return new Promise(async (resolve,reject) =>{
+function addCustomer(name, table_id) {
+    return new Promise(async (resolve, reject) => {
         try {
             const timestamp = Date.now();
             let data = {
@@ -44,19 +44,19 @@ function addCustomer(name,table_id){
                 url_image: `${table_id}/${timestamp}`
             }
             const result = await customer.create(data);
-    
+
             resolve({ result: constants.kResultOk, message: JSON.stringify(result) });
-    
+
         } catch (error) {
-    
+
             reject({ result: constants.kResultNok, message: JSON.stringify(error) });
         }
     })
 }
 router.post("/customer", async (req, res) => {
-    let result =await addCustomer(req.body.customer_name,req.body.table_id)
+    let result = await addCustomer(req.body.customer_name, req.body.table_id)
     res.json(result)
-    
+
 });
 
 router.put("/customer", async (req, res) => {
@@ -76,78 +76,100 @@ router.put("/customer", async (req, res) => {
     }
 })
 
-function getCustomerById(id){
-    return new Promise(async (resolve,reject) =>{
-        try{
-            let customerId = await customer.findOne({ where: { id } })
-        if (customerId) {
+function getCustomerById(id) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let customerId = await customer.findOne({ where: { id} })
+            if (customerId) {
 
-            resolve({
-                result: constants.kResultOk,
-                message: customerId
-            })
-        }else {
-            resolve({
-                result: constants.kResultNok,
-                message: 'cant find customer id'
-            })
-        }
-        }catch(err){
+                resolve({
+                    result: constants.kResultOk,
+                    message: customerId
+                })
+            } else {
+                resolve({
+                    result: constants.kResultNok,
+                    message: 'cant find customer id'
+                })
+            }
+        } catch (err) {
             reject(err)
         }
     })
 }
+
 router.get('/customer/:id', async (req, res) => {
-    
+
     let result = await getCustomerById(req.params.id)
     res.json(result)
 
 })
 
-function getCustomerTableById(id){
-    return new Promise(async (resolve,reject) =>{
-        try{
-            let customerId = await customer.findOne({ where: { table_id:id } })
+router.get('/customer/table/:id', async (req, res) => {
+    try {
+        let customerId = await customer.findOne({ where: { table_id: req.params.id } })
+        console.log(req.params.id)
         if (customerId) {
 
-            resolve({
+            res.json({
                 result: constants.kResultOk,
                 message: customerId
             })
-        }else {
-            resolve({
+        } else {
+            res.json({
                 result: constants.kResultNok,
                 message: 'cant find customer id'
             })
         }
-        }catch(err){
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+function getCustomerTableById(id) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let customerId = await customer.findOne({ where: { table_id: id } })
+            if (customerId) {
+
+                resolve({
+                    result: constants.kResultOk,
+                    message: customerId
+                })
+            } else {
+                resolve({
+                    result: constants.kResultNok,
+                    message: 'cant find customer id'
+                })
+            }
+        } catch (err) {
             reject(err)
         }
     })
 }
 router.get('/customer/table/:id', async (req, res) => {
-    
+
     let result = await getCustomerTableById(req.params.id)
     res.json(result)
 
 })
 
-router.put('/updatePriceCustomer', async (req, res) =>{
-    try{
-
-        let result = await customer.update({total_price: req.body.totalPrice},{where:{id:req.body.id}})
+router.put('/updatePriceCustomer', async (req, res) => {
+    try {
+        let findPrice = await customer.findOne({where:{id:req.body.id}})
+        let result = await customer.update({ total_price: findPrice.total_price + req.body.totalPrice }, { where: { id: req.body.id } })
         res.json(result)
-        
-    }catch(err){
+
+    } catch (err) {
         res.json(err)
     }
 })
 
-router.put('/useDiscount/id/:id', async (req, res) =>{
-    try{
-        
-    }catch(err){
+router.put('/useDiscount/id/:id', async (req, res) => {
+    try {
+
+    } catch (err) {
 
     }
 })
-module.exports = {router,getCustomerById, getCustomerAll,addCustomer,getCustomerTableById};
+module.exports = { router, getCustomerById, getCustomerAll, addCustomer, getCustomerTableById };

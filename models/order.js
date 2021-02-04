@@ -7,11 +7,11 @@ const order = sequelize.define(
     {
         order_date: {
             type: Sequelize.DATE,
-            allowNull: false,
+            
         },
         total_price: {
-            type: Sequelize.DECIMAL,
-            allowNull: false,
+            type: Sequelize.DECIMAL(13,2),
+        
             defaultValue: 0
         },
         note: {

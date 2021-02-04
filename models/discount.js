@@ -13,8 +13,10 @@ const discount = sequelize.define(
             type: Sequelize.INTEGER
         },
         discount_amount:{
-            type: Sequelize.DECIMAL,
-
+            type: Sequelize.DECIMAL(13,2),
+        },
+        minimum:{
+            type: Sequelize.DECIMAL(13,2)
         }
     }
 )

@@ -7,12 +7,10 @@ const customer = sequelize.define(
         
         customer_name: {
             type: Sequelize.STRING,
-            allowNull: false,
             unique: true
         },
         url_image:{
             type: Sequelize.STRING,
-            allowNull: false,
             defaultValue: ""
         },
         timestamp_in:{
@@ -22,7 +20,7 @@ const customer = sequelize.define(
             type: Sequelize.DATE
         },
         total_price:{
-            type: Sequelize.DECIMAL,
+            type: Sequelize.DECIMAL(13,2),
             allowNull: false,
             defaultValue: 0
         }

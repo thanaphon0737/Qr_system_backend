@@ -31,7 +31,8 @@ router.put('/discount-edit/:id', async (req, res) => {
       discount_code: req.body.discount_code,
       discount_remain: req.body.discount_remain,
       discount_amount: req.body.discount_amount,
-      discount_type_id: req.body.discount_type_id
+      discount_type_id: req.body.discount_type_id,
+      minimum: req.body.minimum
     }
     const result = await discount.update(data, { where: { id: req.params.id } })
     res.json(result)
@@ -58,7 +59,8 @@ router.post("/discount", async (req, res) => {
       discount_code: req.body.discount_code,
       discount_remain: req.body.discount_remain,
       discount_amount: req.body.discount_amount,
-      discount_type_id: req.body.discount_type_id
+      discount_type_id: req.body.discount_type_id,
+      minimum: req.body.minimum
     })
     res.json({
       result: constants.kResultOk,
@@ -98,10 +100,12 @@ router.put('/updatediscountInOrder', async (req, res) => {
 
 
       const findOrderCustomer = await order.findAll({ where: { customer_id: req.body.customer_id } })
+      let all_total_price_in_customer = 0
+      findOrderCustomer.forEach( el =>{
+        all_total_price_in_customer += el.total_price
+      })
       findOrderCustomer.forEach(async el => {
-        if (findRemain.discount_type_id == 1) {
-          await order.update({ total_price: el.total_price - findRemain.discount_amount/findOrderCustomer.length }, { where: { id: el.id } })
-        } else if (findRemain.discount_type_id == 2) {
+        if (findRemain.minimum < all_total_price_in_customer) {
           await order.update({ total_price: el.total_price *(1 - findRemain.discount_amount/100) }, { where: { id: el.id } })
         }
       })

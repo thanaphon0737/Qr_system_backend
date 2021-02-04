@@ -8,11 +8,10 @@ const orderProduct = sequelize.define(
         
         order_qty: {
             type: Sequelize.INTEGER,
-            allowNull: false,
+            defaultValue: 0
         },
         price: {
-            type: Sequelize.DECIMAL,
-            allowNull: false,
+            type: Sequelize.DECIMAL(13,2),
             defaultValue: 0
         },
         

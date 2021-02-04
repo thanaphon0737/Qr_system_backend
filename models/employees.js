@@ -5,12 +5,10 @@ const employee =  sequelize.define(
     "employee", {
         username: {
             type: Sequelize.STRING,
-            allowNull: false,
             unique:true
         },
         password: {
             type: Sequelize.STRING,
-            allowNull: false,  
         },
         
         first_name:{
@@ -23,7 +21,7 @@ const employee =  sequelize.define(
             type: Sequelize.STRING
         },
         salary: {
-            type: Sequelize.DECIMAL,
+            type: Sequelize.DECIMAL(13,2),
             allowNull: false,
             defaultValue: 0
         },
