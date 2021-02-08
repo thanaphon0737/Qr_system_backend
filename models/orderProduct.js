@@ -14,7 +14,10 @@ const orderProduct = sequelize.define(
             type: Sequelize.DECIMAL(13,2),
             defaultValue: 0
         },
-        
+        cookedBy: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
+        },
     },
     {
         // options

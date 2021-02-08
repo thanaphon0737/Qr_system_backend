@@ -6,7 +6,7 @@ const dbCaller = require("./db_define");
 const table = require("./models/table");
 const server = require('http').Server(app);
 const ip = '192.168.1.22';
-const ip2 = '10.80.84.144';
+const ip2 = '10.80.86.180';
 const io = require('socket.io')(server, {
   cors: {
     origin: `http://${ip2}:8080`,
@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static(__dirname + "/uploaded"));
+
 app.get('/', (req, res) => {
   res.send('Hello world');
 })
@@ -49,8 +50,9 @@ io.on("connection", socket => {
     io.sockets.emit('getDataCustomer', packet)
   });
   socket.on("accept_order", async (data) => {
-    const { id, status_id } = data
-    const updateResult = await require('./api_order').changeOrderProductStatus(id, status_id)
+    const { id, status_id,cookedBy } = data
+    console.log(cookedBy)
+    const updateResult = await require('./api_order').changeOrderProductStatus(id, status_id,cookedBy)
     io.sockets.emit("changeData");
   })
 

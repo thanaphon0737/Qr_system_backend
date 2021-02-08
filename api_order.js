@@ -36,11 +36,11 @@ async function getOrderProduct() {
 
 }
 
-function changeOrderProductStatus(id, status_id) {
+function changeOrderProductStatus(id, status_id,cookedBy) {
     return new Promise(async function (resolve, reject) {
         try {
 
-            const result = await orderProduct.update({ order_product_status_id: status_id }, { where: { id: id } })
+            const result = await orderProduct.update({ order_product_status_id: status_id,cookedBy }, { where: { id: id } })
             resolve(result)
         } catch (err) {
             console.log(err)

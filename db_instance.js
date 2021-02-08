@@ -15,9 +15,10 @@ const Sequelize = require("sequelize");
 //   logging: false
 // });
 
-const sequelize = new Sequelize('qrsystem2', 'root', '1234', {
+const sequelize = new Sequelize('qrsystem2_1', 'root', '1234', {
   dialect: 'mariadb',
   logging: false
+
 })
 
 async () => {
