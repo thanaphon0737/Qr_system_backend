@@ -39,8 +39,13 @@ async function getOrderProduct() {
 function changeOrderProductStatus(id, status_id,cookedBy) {
     return new Promise(async function (resolve, reject) {
         try {
+            let result = null;
+            if(cookedBy === undefined){
 
-            const result = await orderProduct.update({ order_product_status_id: status_id,cookedBy }, { where: { id: id } })
+               result = await orderProduct.update({ order_product_status_id: status_id }, { where: { id: id } })
+            }else{
+               result = await orderProduct.update({ order_product_status_id: status_id,cookedBy }, { where: { id: id } })
+            }
             resolve(result)
         } catch (err) {
             console.log(err)
@@ -187,7 +192,8 @@ router.get('/orderProduct/order-id/:id', async (req, res) => {
                 product_name: productName.product_name,
                 order_qty: result[i].order_qty,
                 product_status_name: statusName.name,
-                price: result[i].price
+                price: result[i].price,
+                cookedBy: result[i].cookedBy
             }
             datas.push(data)
         }
