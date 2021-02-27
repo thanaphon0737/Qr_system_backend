@@ -7,7 +7,7 @@ const orderProduct = require('./models/orderProduct');
 const orderProductStatus = require("./models/orderProductStatus");
 const product = require("./models/product");
 const sequelize = require("./db_instance");
-
+const customer = require("./models/customer")
 
 
 async function getOrder() {
@@ -36,10 +36,17 @@ async function getOrderProduct() {
 
 }
 
-function changeOrderProductStatus(id, status_id,cookedBy) {
+function changeOrderProductStatus(id, status_id,cookedBy,order_qty) {
     return new Promise(async function (resolve, reject) {
         try {
             let result = null;
+            console.log("orderqty",order_qty)
+            if(status_id === 999){
+
+                let findproduct = await orderProduct.findOne({where:{id}})
+                let productObject = await product.findOne({where:{id:findproduct.product_id}})
+                await product.update({product_qty:productObject.product_qty + order_qty},{where:{id:findproduct.product_id}})
+            }
             if(cookedBy === undefined){
 
                result = await orderProduct.update({ order_product_status_id: status_id }, { where: { id: id } })
@@ -237,14 +244,16 @@ async function putOrderProductByCustomerId(id, status_id) {
             let checkSuccess = await getOrderProductByCustomerId(id)
             let checkflag = false;
             checkSuccess.forEach(async (el) => {
-                if (el.order_product_status_id == 999) {
+                if (el.order_product_status_id == 999 || el.order_product_status_id != 4) {
                     await order.update({ order_status_id: 1 }, { where: { customer_id: id } })
                     checkflag = true;
                     return
                 }
+                
             })
             if (!checkflag) {
                 await order.update({ order_status_id: 2 }, { where: { customer_id: id } })
+                await customer.update({ table_id: null},{ where: {id:id}})
             }
             resolve(result)
         } catch (err) {
@@ -316,6 +325,31 @@ router.put('/updatePriceinOrder', async(req,res) =>{
     }catch(err){
         console.log(err)
         res.json(err)
+    }
+})
+
+router.get('/checkDelivered/:cust_id', async(req,res) =>{
+    try{
+       
+        
+        const result = await sequelize.query(`
+        SELECT customer_id, order_product_status_id
+        FROM orderproducts as A JOIN orders as B ON A.order_id = B.id
+        WHERE B.customer_id = ${req.params.cust_id}`
+        );
+        let checkDelivered = true
+        result[0].forEach(el =>{
+            if (el.order_product_status_id != 4 && el.order_product_status_id != 999){
+                checkDelivered = false
+                return
+            }
+        })
+        
+        
+        
+        res.json({DeliveredAll:checkDelivered})
+    }catch(err){
+        console.log(err)
     }
 })
 module.exports = { router, getOrder, getOrderProduct, changeOrderProductStatus, getOrderProductByCustomerId, putOrderProductByCustomerId };

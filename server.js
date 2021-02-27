@@ -6,10 +6,10 @@ const dbCaller = require("./db_define");
 const table = require("./models/table");
 const server = require('http').Server(app);
 const ip = '192.168.1.22';
-const ip2 = '10.80.85.126';
+const ip2 = '10.10.186.68';
 const io = require('socket.io')(server, {
   cors: {
-    origin: `http://${ip}:8080`,
+    origin: `http://${ip2}:8080`,
     methods: ["GET", "POST"]
   }
 });
@@ -32,7 +32,6 @@ io.on("connection", socket => {
     io.sockets.emit('getDataAcc', getOrder)
   });
   socket.on("putOrder", () => {
-    console.log("put")
     io.sockets.emit("changeData");
   });
 
@@ -50,8 +49,8 @@ io.on("connection", socket => {
     io.sockets.emit('getDataCustomer', packet)
   });
   socket.on("accept_order", async (data) => {
-    const { id, status_id,cookedBy } = data
-    const updateResult = await require('./api_order').changeOrderProductStatus(id, status_id,cookedBy)
+    const { id, status_id,cookedBy,order_qty } = data
+    const updateResult = await require('./api_order').changeOrderProductStatus(id, status_id,cookedBy,order_qty)
     io.sockets.emit("changeData");
   })
 
@@ -71,7 +70,12 @@ io.on("connection", socket => {
   })
   socket.on("add_customer", async data =>{
     const {customer_name, table_id} = data
-    const addedCustomer = await require('./api_customer').addCustomer(customer_name,table_id)
+    try{
+
+      const addedCustomer = await require('./api_customer').addCustomer(customer_name,table_id)
+    }catch(err){
+      io.sockets.emit("throwError unique name")
+    }
     //just wait 1 sed for see loading page
     setTimeout(()=>{
       io.sockets.emit("changeData")

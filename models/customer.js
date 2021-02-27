@@ -7,7 +7,7 @@ const customer = sequelize.define(
         
         customer_name: {
             type: Sequelize.STRING,
-            unique: true
+            
         },
         url_image:{
             type: Sequelize.STRING,

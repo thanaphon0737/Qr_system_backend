@@ -60,11 +60,11 @@ router.post("/register", async (req, res) => {
 
 router.get("/createNewDataTemp", async (req, res) => {
   try {
-    // await role.create({ name: "None" });
-    // await role.create({ name: "Manager" });
-    // await role.create({ name: "Chef" });
-    // await role.create({ name: "Waiter" });
-    // await role.create({ name: "Cashier" });
+    await role.create({ name: "None" });
+    await role.create({ name: "Manager" });
+    await role.create({ name: "Chef" });
+    await role.create({ name: "Waiter" });
+    await role.create({ name: "Cashier" });
     // --------------------------------
     let capa = 4;
     for (let i = 0; i < 4; i++) {
@@ -78,7 +78,8 @@ router.get("/createNewDataTemp", async (req, res) => {
     await orderProductStatus.create({ name: "on the way" });
     await orderProductStatus.create({ name: "delivered" });
     await orderProductStatus.create({ name: "billed" });
-    await orderProductStatus.create({ id: 999 }, { name: "cancel" });
+    await orderProductStatus.create({ id: 999 });
+    await orderProductStatus.update({name: "cancel"},{where:{id:999}})
     res.json({message:"success"});
   } catch (err) {
     console.log(err);
