@@ -9,7 +9,6 @@ const orderStatus = require("./models/orderStatus");
 const orderProductStatus = require("./models/orderProductStatus");
 
 router.post("/login", async (req, res) => {
-  console.log("login: " + JSON.stringify(req.body));
   const { username, password } = req.body;
   try {
     const result = await employee.findOne({ where: { username: username } }, { include: [role] })
@@ -61,11 +60,11 @@ router.post("/register", async (req, res) => {
 
 router.get("/createNewDataTemp", async (req, res) => {
   try {
-    await role.create({ name: "None" });
-    await role.create({ name: "Manager" });
-    await role.create({ name: "Chef" });
-    await role.create({ name: "Waiter" });
-    await role.create({ name: "Cashier" });
+    // await role.create({ name: "None" });
+    // await role.create({ name: "Manager" });
+    // await role.create({ name: "Chef" });
+    // await role.create({ name: "Waiter" });
+    // await role.create({ name: "Cashier" });
     // --------------------------------
     let capa = 4;
     for (let i = 0; i < 4; i++) {

@@ -62,7 +62,7 @@ router.post("/product", (req, res) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async (error, fields, files) => {
       let result = await product.create(fields);
-
+      
       result = await uploadImage(files, result);
 
       res.json({
@@ -100,7 +100,6 @@ router.delete("/product/id/:id", async (req, res)=>{
     result = await product.destroy({ where: { id: id } });
     res.json({ result: constants.kResultOk, message: JSON.stringify(result) });
   }catch(err){
-    console.log(err)
     res.json({ result: constants.kResultNok, message: JSON.stringify(err) });
   }
 })
@@ -120,7 +119,9 @@ router.get("/product/id/:id", async (req, res)=>{
         product_qty:result.product_qty,
         note:result.note,
         product_type_id:result.product_type_id,
-        product_type_name:product_type.name
+        product_type_name:product_type.name,
+        product_limit_time:result.product_limit_time
+
       }
       
       if (data){
@@ -140,7 +141,6 @@ router.get('/getAllProductName', async (req, res) =>{
     GROUP BY id`)
     res.json(result[0])
   }catch(err){
-    console.log(err)
     res.json(err)
   }
 })

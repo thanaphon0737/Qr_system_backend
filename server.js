@@ -9,7 +9,7 @@ const ip = '192.168.1.22';
 const ip2 = '10.80.85.126';
 const io = require('socket.io')(server, {
   cors: {
-    origin: `http://${ip2}:8080`,
+    origin: `http://${ip}:8080`,
     methods: ["GET", "POST"]
   }
 });

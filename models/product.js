@@ -32,7 +32,10 @@ const product = sequelize.define(
         defaultValue: 0
         // allowNull defaults to true
       },
-      
+      product_limit_time:{
+        type: Sequelize.INTEGER,
+        defaultValue:0
+      },
       note:{
         type: Sequelize.STRING
       }
