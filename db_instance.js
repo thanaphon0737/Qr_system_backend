@@ -14,11 +14,12 @@ const Sequelize = require("sequelize");
 //   dialect: "postgres",
 //   logging: false
 // });
-
+const db_host = process.env.DB_HOST || 'localhost';
 const sequelize = new Sequelize('qrsystem5', 'root', '1234', {
+  host: db_host,
   dialect: 'mariadb',
-  logging: false
-
+  logging: false,
+  port: 3306,  
 })
 
 async () => {

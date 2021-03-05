@@ -7,6 +7,33 @@ const constants = require("./constant");
 const table = require("./models/table");
 const orderStatus = require("./models/orderStatus");
 const orderProductStatus = require("./models/orderProductStatus");
+const jwt = require('jsonwebtoken');
+const customer = require("./models/customer");
+
+
+router.post("/customerRequestToken", async(req,res) =>{
+  const {url} = req.body;
+  try{
+    console.log(url)
+    const urlcheck = await customer.findAll({where: {url_image: url}})
+    if(urlcheck.length > 0){
+      const data = {
+        name: urlcheck[0].customer_name,
+        tableId: urlcheck[0].table_id
+      }
+      jwt.sign({data}, 'secretkey', { expiresIn: '1800s' }, (err, token) => {
+        res.json({
+          token
+        });
+      });
+    }else {
+      res.sendStatus(401);
+    }
+  }catch(err){
+    console.log(err)
+    res.sendStatus(403);
+  }
+});
 
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -18,12 +45,19 @@ router.post("/login", async (req, res) => {
       role_name: role_name.name,
       id: result.id
     }
+    
     if (result) {
       if (bcrypt.compareSync(password, result.password)) {
-        res.json({
-          result: constants.kResultOk,
-          message: data
+        // res.json({
+        //   result: constants.kResultOk,
+        //   message: data
+        // });
+        jwt.sign({data}, 'secretkey', { expiresIn: '1800s' }, (err, token) => {
+          res.json({
+            token
+          });
         });
+
       } else {
         res.json({ result: constants.kResultNok, message: "Invalid password" });
       }
@@ -42,8 +76,6 @@ router.post("/register", async (req, res) => {
     req.body.password = await bcrypt.hash(req.body.password, 8);
 
     const role_id = await role.findOne({ where: { name: 'None' } })
-
-
     const employeeCreated = {
       username: req.body.username,
       password: req.body.password,
@@ -86,5 +118,13 @@ router.get("/createNewDataTemp", async (req, res) => {
   }
 
 })
+
+
+
+//test me
+router.get('/me', async (req, res) => {
+  const result = await role.findAll()
+  res.json(result);
+});
 
 module.exports = router;

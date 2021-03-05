@@ -6,10 +6,10 @@ const dbCaller = require("./db_define");
 const table = require("./models/table");
 const server = require('http').Server(app);
 const ip = '192.168.1.22';
-const ip2 = '10.10.186.68';
+const ip2 = '10.80.87.201';
 const io = require('socket.io')(server, {
   cors: {
-    origin: `http://${ip2}:8080`,
+    origin: `http://${ip}:8080`,
     methods: ["GET", "POST"]
   }
 });
@@ -17,12 +17,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static(__dirname + "/uploaded"));
-
+const nodeEnv = process.env.NODE_ENV || 'development'
 app.get('/', (req, res) => {
-  res.send('Hello world');
+    res.json({'Hello world':1,nodeEnv});
 })
 
+
+
 app.use("/api/v2", require("./api"))
+
 
 io.on("connection", socket => {
   // console.log("connected by " + socket.id);

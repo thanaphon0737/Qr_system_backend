@@ -1,0 +1,31 @@
+# Use root/example as user/password credentials
+version: "3"
+
+services:
+  backend-web-docker:
+    container_name: backend-web
+    restart: on-failure
+    build: .
+    ports:
+      - 8081:8081
+    depends_on:
+      - db
+    environment: 
+      DB_HOST: db
+  db:
+    image: mariadb:10.5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: qrsystemT1
+    volumes: 
+      -mrdata:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8888:8080
+
+volumes: 
+  mrdata:

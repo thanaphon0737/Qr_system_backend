@@ -14,6 +14,7 @@ const stockInProduct = require('./models/stockInProduct')
 const table = require('./models/table')
 
 
+
 table.hasOne(customer,{foreignKey:'table_id'});
 customer.belongsTo(table,{foreignKey:'table_id'});
 role.hasMany(employee, {foreignKey:'role_id'});
@@ -39,7 +40,6 @@ stockInProduct.belongsTo(product, {foreignKey:'product_id'});
 stockIn.hasMany(stockInProduct, {foreignKey:'stockin_id'});
 stockInProduct.belongsTo(stockIn, {foreignKey:'stockin_id'});
     //////////////////////////
-
 customer.sync({ force: false });
 discount.sync({ force: false });
 discountType.sync({ force: false });
