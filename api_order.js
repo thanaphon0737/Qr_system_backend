@@ -303,7 +303,7 @@ router.get('/orderTypeQtyAllTime', async (req, res) => {
     try {
         const result = await sequelize.query(`
         SELECT B.product_name, SUM(A.order_qty) as qty
-        FROM orderproducts as A 
+        FROM orderProducts as A 
         INNER JOIN products as B on A.product_id = B.id
         WHERE A.order_product_status_id = 5
         GROUP BY B.product_name
@@ -334,7 +334,7 @@ router.get('/checkDelivered/:cust_id', async(req,res) =>{
         
         const result = await sequelize.query(`
         SELECT customer_id, order_product_status_id
-        FROM orderproducts as A JOIN orders as B ON A.order_id = B.id
+        FROM orderProducts as A JOIN orders as B ON A.order_id = B.id
         WHERE B.customer_id = ${req.params.cust_id}`
         );
         let checkDelivered = true

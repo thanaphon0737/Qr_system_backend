@@ -19,7 +19,7 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: qrsystemT1
     volumes: 
-      -mrdata:/var/lib/mysql
+      - ./datadir:/var/lib/mysql
 
   adminer:
     image: adminer
@@ -27,5 +27,3 @@ services:
     ports:
       - 8888:8080
 
-volumes: 
-  mrdata:

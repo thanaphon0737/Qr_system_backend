@@ -21,7 +21,7 @@ router.post("/customerRequestToken", async(req,res) =>{
         name: urlcheck[0].customer_name,
         tableId: urlcheck[0].table_id
       }
-      jwt.sign({data}, 'secretkey', { expiresIn: '1800s' }, (err, token) => {
+      jwt.sign({data}, 'secretkey', { expiresIn: '8h' }, (err, token) => {
         res.json({
           token
         });
