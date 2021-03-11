@@ -6,12 +6,13 @@ services:
     container_name: backend-web
     restart: on-failure
     build: .
+    image: 0838/backend-service-qrsystem
     ports:
       - 8081:8081
     depends_on:
       - db
     environment: 
-      DB_HOST: db
+      DB_HOST: db 
   db:
     image: mariadb:10.5
     restart: always
