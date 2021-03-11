@@ -151,7 +151,7 @@ router.post('/orderProduct', async (req, res) => {
                 });
                 results.push(result)
             }
-            totalPrice = await sequelize.query(`SELECT sum(price*order_qty) as sum_price from orderproducts where order_id = ${createdOrder.id}`);
+            totalPrice = await sequelize.query(`SELECT sum(price*order_qty) as sum_price from orderProducts where order_id = ${createdOrder.id}`);
             let updateTotal = await order.update({ total_price: totalPrice[0][0].sum_price }, { where: { id: createdOrder.id } })
 
 
