@@ -236,7 +236,7 @@ async function putOrderProductByCustomerId(id, status_id) {
     return new Promise(async function (resolve, reject) {
         try {
             const result = await sequelize.query(`
-        UPDATE orderproducts as A
+        UPDATE orderProducts as A
         INNER JOIN orders as B ON A.order_id = B.id
         SET order_product_status_id = ${status_id}
         WHERE B.customer_id = ${id}
