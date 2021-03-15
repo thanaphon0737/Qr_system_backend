@@ -10,7 +10,7 @@ const ip2 = '10.80.87.201';
 const ipglobal = ip;
 const io = require('socket.io')(server, {
   cors: {
-    origin: `http://${ipglobal}:8080`,
+    origin: `http://${ipglobal}:80`,
     methods: ["GET", "POST"]
   }
 });
