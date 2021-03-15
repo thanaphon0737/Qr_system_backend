@@ -6,8 +6,8 @@ const dbCaller = require("./db_define");
 const table = require("./models/table");
 const server = require('http').Server(app);
 const ip = '192.168.1.22';
-const ip2 = '10.80.87.201';
-const ipglobal = ip;
+const ip2 = '206.189.158.45';
+const ipglobal = ip2;
 const io = require('socket.io')(server, {
   cors: {
     origin: `http://${ipglobal}:80`,
