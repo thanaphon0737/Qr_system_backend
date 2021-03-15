@@ -7,9 +7,10 @@ const table = require("./models/table");
 const server = require('http').Server(app);
 const ip = '192.168.1.22';
 const ip2 = '10.80.87.201';
+const ipglobal = ip;
 const io = require('socket.io')(server, {
   cors: {
-    origin: `http://${ip}:8080`,
+    origin: `http://${ipglobal}:8080`,
     methods: ["GET", "POST"]
   }
 });
