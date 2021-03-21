@@ -27,6 +27,7 @@ async function getOrderProduct() {
     return new Promise(async function (data, err) {
         try {
             const result = await orderProduct.findAll({ include: [product, orderProductStatus, order] })
+            
             data(result)
         } catch (err) {
             console.log(err)
