@@ -14,3 +14,4 @@ npm run dev
 
 
 # NOTE http and socket.io on in port 8081
+## [link to FrontEnd](https://github.com/thanaphon0737/Qr_system_vue_only)
