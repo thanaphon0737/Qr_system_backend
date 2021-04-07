@@ -12,6 +12,10 @@ npm install
 npm run dev
 ```
 
+### deploy with docker
+```
+docker compose up -d --build
+```
 
 # NOTE http and socket.io on in port 8081
 ## [link to FrontEnd](https://github.com/thanaphon0737/Qr_system_vue_only)
